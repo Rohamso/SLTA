@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lalezar&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
+  }
+
+  [dir='rtl'] * {
+    font-family: 'Lalezar', 'Share Tech Mono', sans-serif;
+  }
+
+  body {
+    @apply bg-gray-950 text-green-100;
+  }
+
+  h1 {
+    @apply text-4xl md:text-5xl font-bold tracking-tight;
+  }
+
+  h2 {
+    @apply text-3xl md:text-4xl font-bold;
+  }
+
+  h3 {
+    @apply text-xl md:text-2xl font-semibold;
+  }
+
+  p {
+    @apply leading-relaxed;
+  }
+}
