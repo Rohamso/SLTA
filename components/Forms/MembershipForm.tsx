@@ -34,16 +34,16 @@ export function MembershipForm() {
         body: JSON.stringify(formData),
       });
       
+      const data = await response.json();
       if (!response.ok) {
-        throw new Error('Failed to submit membership application');
+        throw new Error(data?.detail || data?.error || `Server error ${response.status}`);
       }
       
-      const data = await response.json();
       console.log('Membership application submitted:', data);
       setSubmitted(true);
     } catch (error) {
       console.error('Submission error:', error);
-      alert('Failed to submit application. Please try again.');
+      alert(`Failed to submit: ${error instanceof Error ? error.message : String(error)}`);
     } finally {
       setLoading(false);
     }

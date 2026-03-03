@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error saving member:', error);
     return NextResponse.json(
-      { error: 'Failed to save member' },
+      { error: 'Failed to save member', detail: String(error) },
       { status: 500 }
     );
   }

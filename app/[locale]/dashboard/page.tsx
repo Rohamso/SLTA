@@ -72,6 +72,7 @@ export default function DashboardPage() {
       }
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
+      alert(`Dashboard fetch error: ${error instanceof Error ? error.message : String(error)}`);
     } finally {
       setLoading(false);
     }

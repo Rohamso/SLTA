@@ -12,7 +12,17 @@ export interface Member {
   createdAt: string;
 }
 
-const DATA_FILE = path.join(process.cwd(), 'members-data.json');
+// Resolve data file path robustly for cPanel/Passenger environments
+function resolveDataPath(): string {
+  // 1. Explicit env var (most reliable for cPanel)
+  if (process.env.DATA_DIR) {
+    return path.join(process.env.DATA_DIR, 'members-data.json');
+  }
+  // 2. Use process.cwd() (works in most environments)
+  return path.join(process.cwd(), 'members-data.json');
+}
+
+const DATA_FILE = resolveDataPath();
 
 function readStore(): Member[] {
   try {
@@ -21,7 +31,7 @@ function readStore(): Member[] {
       return JSON.parse(data);
     }
   } catch (error) {
-    console.error('Error reading members data:', error);
+    console.error('Error reading members data from', DATA_FILE, error);
   }
   return [];
 }
@@ -29,8 +39,13 @@ function readStore(): Member[] {
 function writeStore(members: Member[]): void {
   try {
     fs.writeFileSync(DATA_FILE, JSON.stringify(members, null, 2), 'utf-8');
+    // Verify the write succeeded
+    if (!fs.existsSync(DATA_FILE)) {
+      throw new Error('File was not created after writeFileSync');
+    }
   } catch (error) {
-    console.error('Error writing members data:', error);
+    console.error('Error writing members data to', DATA_FILE, error);
+    throw error; // Re-throw so API can report the error
   }
 }
 
@@ -42,6 +57,27 @@ export function addMember(member: Member): void {
   const members = readStore();
   members.push(member);
   writeStore(members);
+}
+
+export function getDataFilePath(): string {
+  return DATA_FILE;
+}
+
+export function getDataFileStatus(): { path: string; exists: boolean; count: number; writable: boolean; cwd: string } {
+  let writable = false;
+  try {
+    const dir = path.dirname(DATA_FILE);
+    fs.accessSync(dir, fs.constants.W_OK);
+    writable = true;
+  } catch { /* not writable */ }
+  
+  return {
+    path: DATA_FILE,
+    exists: fs.existsSync(DATA_FILE),
+    count: readStore().length,
+    writable,
+    cwd: process.cwd(),
+  };
 }
 
 export function getPublicMembers() {
