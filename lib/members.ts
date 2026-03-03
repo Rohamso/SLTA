@@ -12,14 +12,25 @@ export interface Member {
   createdAt: string;
 }
 
-// Resolve data file path robustly for cPanel/Passenger environments
+// Resolve data file path robustly for different hosting environments
 function resolveDataPath(): string {
-  // 1. Explicit env var (most reliable for cPanel)
+  // 1. Explicit env var (most reliable)
   if (process.env.DATA_DIR) {
     return path.join(process.env.DATA_DIR, 'members-data.json');
   }
-  // 2. Use process.cwd() (works in most environments)
-  return path.join(process.cwd(), 'members-data.json');
+  
+  // 2. Check if cwd is writable (works on cPanel, traditional hosting)
+  const cwdPath = path.join(process.cwd(), 'members-data.json');
+  try {
+    fs.accessSync(process.cwd(), fs.constants.W_OK);
+    return cwdPath;
+  } catch {
+    // cwd is read-only (serverless like Vercel/Lambda: /var/task/)
+  }
+  
+  // 3. Fallback to /tmp/ (writable on serverless, but ephemeral)
+  console.warn('Using /tmp/ for member data — data will not persist across cold starts');
+  return path.join('/tmp', 'members-data.json');
 }
 
 const DATA_FILE = resolveDataPath();
