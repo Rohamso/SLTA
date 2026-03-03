@@ -8,6 +8,10 @@ const transporter = nodemailer.createTransport({
     user: process.env.SMTP_USER || 'contact@lionandsuntech.org',
     pass: process.env.SMTP_PASS || '',
   },
+  tls: {
+    // Namecheap shared hosting uses *.web-hosting.com cert
+    rejectUnauthorized: false,
+  },
 });
 
 interface MemberDetails {
