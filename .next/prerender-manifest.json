@@ -1,30 +1,6 @@
 {
   "version": 4,
   "routes": {
-    "/": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "next-action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/",
-      "dataRoute": "/index.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
     "/_not-found": {
       "initialStatus": 404,
       "experimentalBypassFor": [
@@ -49,13 +25,37 @@
         "x-next-revalidated-tags",
         "x-next-revalidate-tag-token"
       ]
+    },
+    "/": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "next-action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/",
+      "dataRoute": "/index.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
     }
   },
   "dynamicRoutes": {},
   "notFoundRoutes": [],
   "preview": {
-    "previewModeId": "d39167840f5140714bbf8f9245573f38",
-    "previewModeSigningKey": "dfdb78496fd013205d728e4ce63b862f32af42e6f53bccfa4ddfd3ca19c1f229",
-    "previewModeEncryptionKey": "1801865eeada99f50f9edc56c7d86a665927d42682112c4fe4a6cdc01eef9430"
+    "previewModeId": "fbc9a1711203ca5476dd9f027e783be8",
+    "previewModeSigningKey": "76bfabaa396e2c51a604f971ce6ed959721d599429c1c585d0ce4a33aa1687b0",
+    "previewModeEncryptionKey": "08138079f9deba3c4e614c20553bfce3a74a16ad7b843019497fcf699f55ed5a"
   }
 }
