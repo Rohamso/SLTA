@@ -1,3 +1,6 @@
+import fs from 'fs';
+import path from 'path';
+
 export interface Member {
   id: string;
   fullName: string;
@@ -9,19 +12,40 @@ export interface Member {
   createdAt: string;
 }
 
-// Shared in-memory member store
-let membersStore: Member[] = [];
+const DATA_FILE = path.join(process.cwd(), 'members-data.json');
+
+function readStore(): Member[] {
+  try {
+    if (fs.existsSync(DATA_FILE)) {
+      const data = fs.readFileSync(DATA_FILE, 'utf-8');
+      return JSON.parse(data);
+    }
+  } catch (error) {
+    console.error('Error reading members data:', error);
+  }
+  return [];
+}
+
+function writeStore(members: Member[]): void {
+  try {
+    fs.writeFileSync(DATA_FILE, JSON.stringify(members, null, 2), 'utf-8');
+  } catch (error) {
+    console.error('Error writing members data:', error);
+  }
+}
 
 export function getMembers(): Member[] {
-  return membersStore;
+  return readStore();
 }
 
 export function addMember(member: Member): void {
-  membersStore.push(member);
+  const members = readStore();
+  members.push(member);
+  writeStore(members);
 }
 
 export function getPublicMembers() {
-  return membersStore
+  return readStore()
     .filter(m => m.securityLevel === 'publicAdvocate')
     .map(m => ({
       id: m.id,
@@ -31,6 +55,7 @@ export function getPublicMembers() {
 }
 
 export function getStatistics() {
+  const membersStore = readStore();
   return {
     totalMembers: membersStore.length,
     publicAdvocates: membersStore.filter(m => m.securityLevel === 'publicAdvocate').length,

@@ -1,0 +1,14 @@
+{
+  "/_not-found/page": "/_not-found",
+  "/api/members/route": "/api/members",
+  "/api/dashboard/route": "/api/dashboard",
+  "/page": "/",
+  "/[locale]/members/page": "/[locale]/members",
+  "/[locale]/privacy/page": "/[locale]/privacy",
+  "/[locale]/dashboard/page": "/[locale]/dashboard",
+  "/[locale]/page": "/[locale]",
+  "/[locale]/security/page": "/[locale]/security",
+  "/[locale]/terms/page": "/[locale]/terms",
+  "/[locale]/membership/page": "/[locale]/membership",
+  "/[locale]/trust/page": "/[locale]/trust"
+}
