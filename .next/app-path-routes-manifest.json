@@ -1,15 +1,15 @@
 {
   "/_not-found/page": "/_not-found",
-  "/api/dashboard/route": "/api/dashboard",
   "/api/members/route": "/api/members",
+  "/api/dashboard/route": "/api/dashboard",
   "/api/health/route": "/api/health",
   "/page": "/",
-  "/[locale]/members/page": "/[locale]/members",
+  "/[locale]/dashboard/page": "/[locale]/dashboard",
   "/[locale]/membership/page": "/[locale]/membership",
-  "/[locale]/privacy/page": "/[locale]/privacy",
-  "/[locale]/security/page": "/[locale]/security",
   "/[locale]/trust/page": "/[locale]/trust",
-  "/[locale]/terms/page": "/[locale]/terms",
+  "/[locale]/privacy/page": "/[locale]/privacy",
+  "/[locale]/members/page": "/[locale]/members",
   "/[locale]/page": "/[locale]",
-  "/[locale]/dashboard/page": "/[locale]/dashboard"
+  "/[locale]/terms/page": "/[locale]/terms",
+  "/[locale]/security/page": "/[locale]/security"
 }
