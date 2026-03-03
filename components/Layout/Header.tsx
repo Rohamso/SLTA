@@ -51,9 +51,6 @@ export function Header() {
             <Link href={`/${locale}/trust`} className="text-green-300/80 hover:text-green-400 transition font-medium text-sm">
               {t('nav.trust')}
             </Link>
-            <Link href={`/${locale}/members`} className="text-green-300/80 hover:text-green-400 transition font-medium text-sm">
-              {locale === 'en' ? 'Members' : 'اعضا'}
-            </Link>
           </nav>
 
           {/* Language Toggle */}

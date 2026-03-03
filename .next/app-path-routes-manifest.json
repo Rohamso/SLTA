@@ -3,12 +3,12 @@
   "/api/members/route": "/api/members",
   "/api/dashboard/route": "/api/dashboard",
   "/page": "/",
+  "/[locale]/membership/page": "/[locale]/membership",
   "/[locale]/members/page": "/[locale]/members",
-  "/[locale]/privacy/page": "/[locale]/privacy",
-  "/[locale]/dashboard/page": "/[locale]/dashboard",
-  "/[locale]/page": "/[locale]",
+  "/[locale]/trust/page": "/[locale]/trust",
   "/[locale]/security/page": "/[locale]/security",
   "/[locale]/terms/page": "/[locale]/terms",
-  "/[locale]/membership/page": "/[locale]/membership",
-  "/[locale]/trust/page": "/[locale]/trust"
+  "/[locale]/privacy/page": "/[locale]/privacy",
+  "/[locale]/dashboard/page": "/[locale]/dashboard",
+  "/[locale]/page": "/[locale]"
 }

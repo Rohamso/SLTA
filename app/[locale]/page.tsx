@@ -142,7 +142,7 @@ export default function Home() {
       {/* Social Media */}
       <section className="mb-20 flex justify-center items-center gap-8">
         <a
-          href="https://x.com/lionsunintech"
+          href="https://x.com/LSTA_Org"
           target="_blank"
           rel="noopener noreferrer"
           className="group flex items-center justify-center w-16 h-16 bg-black border border-green-500/30 rounded-full hover:border-green-400 hover:bg-green-950 transition"
