@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
   }
   
   try {
-    const members = getMembers();
+    const members = await getMembers();
     return NextResponse.json(members, {
       headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate' },
     });
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     const action = request.nextUrl.searchParams.get('action');
     
     if (action === 'statistics') {
-      const stats = getStatistics();
+      const stats = await getStatistics();
       return NextResponse.json(stats, {
         headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate' },
       });

@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const status = getDataFileStatus();
+    const status = await getDataFileStatus();
     return NextResponse.json({
       ok: true,
       timestamp: new Date().toISOString(),

@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(_request: NextRequest) {
   try {
-    const publicMembers = getPublicMembers();
+    const publicMembers = await getPublicMembers();
     return NextResponse.json(publicMembers, {
       headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate' },
     });
@@ -26,20 +26,16 @@ export async function POST(request: NextRequest) {
       createdAt: new Date().toISOString(),
     };
     
-    // Try to persist to file (may fail on read-only filesystems)
-    try {
-      addMember(newMember);
-    } catch (fileError) {
-      console.warn('File storage failed (read-only fs), continuing with email:', fileError);
-    }
+    // Persist to MongoDB
+    await addMember(newMember);
 
-    // Send email notification — this is the reliable record
+    // Send email notification
     try {
       await sendNewMemberEmail(newMember);
       console.log('Member notification email sent for:', newMember.fullName);
     } catch (emailError) {
       console.error('Failed to send member email:', emailError);
-      // Don't fail the request — member was still accepted
+      // Don't fail the request — member was still saved to DB
     }
     
     return NextResponse.json(newMember, { status: 201 });
