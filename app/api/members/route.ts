@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getPublicMembers, addMember, type Member } from '@/lib/members';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(_request: NextRequest) {
   try {
     const publicMembers = getPublicMembers();
-    return NextResponse.json(publicMembers);
+    return NextResponse.json(publicMembers, {
+      headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate' },
+    });
   } catch (error) {
     console.error('Error reading members:', error);
     return NextResponse.json([], { status: 200 });

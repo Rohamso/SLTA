@@ -54,7 +54,7 @@ export default function DashboardPage() {
       const headers = { 'x-dashboard-token': DASHBOARD_TOKEN };
       
       // Fetch members
-      const membersRes = await fetch('/api/dashboard', { headers });
+      const membersRes = await fetch('/api/dashboard', { headers, cache: 'no-store' });
       if (membersRes.ok) {
         const data = await membersRes.json();
         setMembers(data);
@@ -64,6 +64,7 @@ export default function DashboardPage() {
       const statsRes = await fetch('/api/dashboard?action=statistics', {
         method: 'POST',
         headers,
+        cache: 'no-store',
       });
       if (statsRes.ok) {
         const statsData = await statsRes.json();
@@ -143,12 +144,20 @@ export default function DashboardPage() {
             {locale === 'en' ? 'Manage and monitor all organization members.' : 'مدیریت و نظارت بر تمام اعضای سازمان.'}
           </p>
         </div>
-        <button
-          onClick={() => setAuthenticated(false)}
-          className="px-4 py-2 text-green-400 border border-green-500/30 rounded-lg hover:bg-green-900/50 transition"
-        >
-          {locale === 'en' ? 'Logout' : 'خروج'}
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={fetchData}
+            className="px-4 py-2 text-green-400 border border-green-500/30 rounded-lg hover:bg-green-900/50 transition"
+          >
+            {locale === 'en' ? '↻ Refresh' : '↻ بروزرسانی'}
+          </button>
+          <button
+            onClick={() => setAuthenticated(false)}
+            className="px-4 py-2 text-green-400 border border-green-500/30 rounded-lg hover:bg-green-900/50 transition"
+          >
+            {locale === 'en' ? 'Logout' : 'خروج'}
+          </button>
+        </div>
       </div>
 
       {/* Statistics Grid */}
