@@ -2,11 +2,11 @@
   "/_not-found/page": "/_not-found",
   "/api/members/route": "/api/members",
   "/page": "/",
-  "/[locale]/membership/page": "/[locale]/membership",
-  "/[locale]/security/page": "/[locale]/security",
-  "/[locale]/privacy/page": "/[locale]/privacy",
-  "/[locale]/page": "/[locale]",
-  "/[locale]/trust/page": "/[locale]/trust",
   "/[locale]/members/page": "/[locale]/members",
-  "/[locale]/terms/page": "/[locale]/terms"
+  "/[locale]/security/page": "/[locale]/security",
+  "/[locale]/membership/page": "/[locale]/membership",
+  "/[locale]/page": "/[locale]",
+  "/[locale]/terms/page": "/[locale]/terms",
+  "/[locale]/trust/page": "/[locale]/trust",
+  "/[locale]/privacy/page": "/[locale]/privacy"
 }

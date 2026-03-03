@@ -1,6 +1,30 @@
 {
   "version": 4,
   "routes": {
+    "/": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "next-action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/",
+      "dataRoute": "/index.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
     "/_not-found": {
       "initialStatus": 404,
       "experimentalBypassFor": [
@@ -25,37 +49,13 @@
         "x-next-revalidated-tags",
         "x-next-revalidate-tag-token"
       ]
-    },
-    "/": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "next-action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/",
-      "dataRoute": "/index.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
     }
   },
   "dynamicRoutes": {},
   "notFoundRoutes": [],
   "preview": {
-    "previewModeId": "2e7cdf17fd5e91fd86bdef6538390aad",
-    "previewModeSigningKey": "b77e8a371bdf4c1c34f86e94735866d176181322c211be713836126ab7795ac1",
-    "previewModeEncryptionKey": "a8ae2eac11264f8c87f31033a90e80fc3a403989d10bf6f2a7d5741041b41209"
+    "previewModeId": "1fb578dac1c0850cb53d2077c37e9b04",
+    "previewModeSigningKey": "b9b866447f190b45e35e43fc8b64d03a61b5a63dbb3b0d918e04fcca58041d1e",
+    "previewModeEncryptionKey": "2ce179bee1dad08ed45df84f169697bfb1ae838d82f91281816692588204dc7e"
   }
 }
