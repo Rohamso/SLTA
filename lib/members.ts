@@ -1,4 +1,5 @@
-import getClientPromise from './mongodb';
+import getPool, { ensureTable } from './mongodb';
+import { RowDataPacket } from 'mysql2';
 
 export interface Member {
   id: string;
@@ -11,61 +12,84 @@ export interface Member {
   createdAt: string;
 }
 
-async function getCollection() {
-  const client = await getClientPromise();
-  const db = client.db(process.env.MONGODB_DB || 'lsta');
-  return db.collection<Member>('members');
+let tableReady = false;
+async function init() {
+  if (!tableReady) {
+    await ensureTable();
+    tableReady = true;
+  }
 }
 
 export async function getMembers(): Promise<Member[]> {
-  const collection = await getCollection();
-  return collection.find({}).sort({ createdAt: -1 }).toArray() as unknown as Member[];
+  await init();
+  const db = getPool();
+  const [rows] = await db.execute<RowDataPacket[]>(
+    'SELECT * FROM members ORDER BY createdAt DESC'
+  );
+  return rows as unknown as Member[];
 }
 
 export async function addMember(member: Member): Promise<void> {
-  const collection = await getCollection();
-  await collection.insertOne(member as any);
+  await init();
+  const db = getPool();
+  await db.execute(
+    'INSERT INTO members (id, fullName, email, organization, expertise, projectsInterest, securityLevel, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+    [member.id, member.fullName, member.email, member.organization, member.expertise, member.projectsInterest, member.securityLevel, member.createdAt]
+  );
 }
 
 export async function getPublicMembers() {
-  const collection = await getCollection();
-  return collection
-    .find({ securityLevel: 'publicAdvocate' })
-    .project({ id: 1, fullName: 1, expertise: 1, _id: 0 })
-    .toArray();
+  await init();
+  const db = getPool();
+  const [rows] = await db.execute<RowDataPacket[]>(
+    'SELECT id, fullName, expertise FROM members WHERE securityLevel = ?',
+    ['publicAdvocate']
+  );
+  return rows;
 }
 
 export async function getStatistics() {
-  const collection = await getCollection();
-  const totalMembers = await collection.countDocuments();
-  const publicAdvocates = await collection.countDocuments({ securityLevel: 'publicAdvocate' });
-  const discreteContributors = await collection.countDocuments({ securityLevel: 'discreteContributor' });
-  const confidentialMembers = await collection.countDocuments({ securityLevel: 'confidentialMember' });
-  const recentMembers = await collection.find({}).sort({ createdAt: -1 }).limit(5).toArray();
+  await init();
+  const db = getPool();
+  
+  const [totals] = await db.execute<RowDataPacket[]>(
+    `SELECT 
+      COUNT(*) as totalMembers,
+      SUM(securityLevel = 'publicAdvocate') as publicAdvocates,
+      SUM(securityLevel = 'discreteContributor') as discreteContributors,
+      SUM(securityLevel = 'confidentialMember') as confidentialMembers
+    FROM members`
+  );
+  
+  const [recent] = await db.execute<RowDataPacket[]>(
+    'SELECT * FROM members ORDER BY createdAt DESC LIMIT 5'
+  );
 
+  const stats = totals[0];
   return {
-    totalMembers,
-    publicAdvocates,
-    discreteContributors,
-    confidentialMembers,
-    recentMembers,
+    totalMembers: Number(stats.totalMembers),
+    publicAdvocates: Number(stats.publicAdvocates),
+    discreteContributors: Number(stats.discreteContributors),
+    confidentialMembers: Number(stats.confidentialMembers),
+    recentMembers: recent,
   };
 }
 
 export async function getDataFileStatus() {
   try {
-    const collection = await getCollection();
-    const count = await collection.countDocuments();
+    await init();
+    const db = getPool();
+    const [rows] = await db.execute<RowDataPacket[]>('SELECT COUNT(*) as cnt FROM members');
     return {
-      path: 'MongoDB Atlas',
+      path: 'MySQL (Namecheap)',
       exists: true,
-      count,
+      count: Number(rows[0].cnt),
       writable: true,
       cwd: process.cwd(),
     };
   } catch (error) {
     return {
-      path: 'MongoDB Atlas',
+      path: 'MySQL (Namecheap)',
       exists: false,
       count: 0,
       writable: false,

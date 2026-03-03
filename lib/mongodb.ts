@@ -1,34 +1,35 @@
-import { MongoClient } from 'mongodb';
+import mysql from 'mysql2/promise';
 
-const options = {};
+let pool: mysql.Pool | null = null;
 
-let client: MongoClient;
-let clientPromise: Promise<MongoClient>;
-
-// In development, use a global variable so the MongoClient is not constantly
-// recreated during hot reloading.
-const globalWithMongo = global as typeof globalThis & {
-  _mongoClientPromise?: Promise<MongoClient>;
-};
-
-export default function getClientPromise(): Promise<MongoClient> {
-  const uri = process.env.MONGODB_URI;
-  if (!uri) {
-    throw new Error('Please add your MongoDB URI to the MONGODB_URI environment variable');
+export default function getPool(): mysql.Pool {
+  if (!pool) {
+    pool = mysql.createPool({
+      host: process.env.MYSQL_HOST || 'localhost',
+      port: parseInt(process.env.MYSQL_PORT || '3306'),
+      user: process.env.MYSQL_USER || '',
+      password: process.env.MYSQL_PASSWORD || '',
+      database: process.env.MYSQL_DATABASE || 'lsta',
+      waitForConnections: true,
+      connectionLimit: 5,
+    });
   }
+  return pool;
+}
 
-  if (process.env.NODE_ENV === 'development') {
-    if (!globalWithMongo._mongoClientPromise) {
-      client = new MongoClient(uri, options);
-      globalWithMongo._mongoClientPromise = client.connect();
-    }
-    clientPromise = globalWithMongo._mongoClientPromise;
-  } else {
-    if (!clientPromise) {
-      client = new MongoClient(uri, options);
-      clientPromise = client.connect();
-    }
-  }
-
-  return clientPromise;
+// Auto-create the members table if it doesn't exist
+export async function ensureTable(): Promise<void> {
+  const db = getPool();
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS members (
+      id VARCHAR(64) PRIMARY KEY,
+      fullName VARCHAR(255) NOT NULL,
+      email VARCHAR(255) NOT NULL,
+      organization VARCHAR(255) DEFAULT '',
+      expertise TEXT DEFAULT '',
+      projectsInterest TEXT DEFAULT '',
+      securityLevel VARCHAR(50) DEFAULT 'publicAdvocate',
+      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
 }
