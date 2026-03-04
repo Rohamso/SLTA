@@ -3,11 +3,11 @@
   "/api/members/route": "/api/members",
   "/page": "/",
   "/[locale]/chat/page": "/[locale]/chat",
-  "/[locale]/terms/page": "/[locale]/terms",
   "/[locale]/members/page": "/[locale]/members",
+  "/[locale]/privacy/page": "/[locale]/privacy",
   "/[locale]/membership/page": "/[locale]/membership",
-  "/[locale]/trust/page": "/[locale]/trust",
   "/[locale]/page": "/[locale]",
   "/[locale]/security/page": "/[locale]/security",
-  "/[locale]/privacy/page": "/[locale]/privacy"
+  "/[locale]/trust/page": "/[locale]/trust",
+  "/[locale]/terms/page": "/[locale]/terms"
 }

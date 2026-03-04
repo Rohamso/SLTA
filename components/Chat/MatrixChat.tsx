@@ -179,9 +179,12 @@ export default function MatrixChat({ roomId, roomDisplayName, labels, isRTL }: M
       try {
         const since = sinceTokenRef.current;
         const server = homeserverUrlRef.current;
+        const filter = encodeURIComponent(JSON.stringify({
+          room: { rooms: [roomId], timeline: { limit: 50 } }
+        }));
         const url = since
-          ? `${server}/_matrix/client/v3/sync?since=${since}&timeout=10000&filter={"room":{"rooms":["${roomId}"],"timeline":{"limit":50}}}`
-          : `${server}/_matrix/client/v3/sync?timeout=0&filter={"room":{"rooms":["${roomId}"],"timeline":{"limit":50}}}`;
+          ? `${server}/_matrix/client/v3/sync?since=${encodeURIComponent(since)}&timeout=10000&filter=${filter}`
+          : `${server}/_matrix/client/v3/sync?timeout=0&filter=${filter}`;
 
         const res = await fetch(url, {
           headers: { 'Authorization': `Bearer ${accessToken}` },
@@ -315,8 +318,14 @@ export default function MatrixChat({ roomId, roomDisplayName, labels, isRTL }: M
       );
 
       if (res.ok) {
-        // Don't optimistically add — let sync polling confirm delivery
-        setInputMsg('');
+        const resData = await res.json().catch(() => ({}));
+        if (resData.event_id) {
+          // Server confirmed the message — sync polling will pick it up
+          setInputMsg('');
+        } else {
+          console.error('Send: no event_id in response', resData);
+          setSendError('Message may not have been delivered');
+        }
       } else {
         const errData = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
         console.error('Send failed:', res.status, errData);
