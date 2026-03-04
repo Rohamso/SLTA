@@ -98,6 +98,8 @@ export default function MatrixChat({ roomAlias, labels, isRTL }: MatrixChatProps
   const [accessToken, setAccessToken] = useState('');
   const [userId, setUserId] = useState('');
   const [resolvedRoomId, setResolvedRoomId] = useState('');
+  const [sendError, setSendError] = useState('');
+  const homeserverUrlRef = useRef('https://matrix.org');
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -265,15 +267,27 @@ export default function MatrixChat({ roomAlias, labels, isRTL }: MatrixChatProps
       const loginData = await loginRes.json();
       setAccessToken(loginData.access_token);
       setUserId(loginData.user_id);
+      homeserverUrlRef.current = server;
 
-      // Join the room
-      if (resolvedRoomId) {
-        const roomIdEncoded = encodeURIComponent(resolvedRoomId);
-        await fetch(`${server}/_matrix/client/v3/join/${roomIdEncoded}?access_token=${loginData.access_token}`, {
+      // Join the room (try both alias and room ID)
+      try {
+        // First try joining by alias
+        const aliasEncoded = encodeURIComponent(roomAlias);
+        await fetch(`${server}/_matrix/client/v3/join/${aliasEncoded}?access_token=${loginData.access_token}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({}),
         });
+      } catch {
+        // Fallback: join by room ID
+        if (resolvedRoomId) {
+          const roomIdEncoded = encodeURIComponent(resolvedRoomId);
+          await fetch(`${server}/_matrix/client/v3/join/${roomIdEncoded}?access_token=${loginData.access_token}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({}),
+          });
+        }
       }
 
       setLoggedIn(true);
@@ -291,40 +305,50 @@ export default function MatrixChat({ roomAlias, labels, isRTL }: MatrixChatProps
     if (!inputMsg.trim() || !loggedIn || !accessToken || !resolvedRoomId) return;
 
     setSending(true);
+    setSendError('');
+    const msgText = inputMsg.trim();
+
     try {
-      const server = loginServer.startsWith('http') ? loginServer : `https://${loginServer}`;
+      const server = homeserverUrlRef.current;
       const roomIdEncoded = encodeURIComponent(resolvedRoomId);
-      const txnId = `m${Date.now()}`;
+      const txnId = `m${Date.now()}.${Math.random().toString(36).slice(2, 8)}`;
 
       const res = await fetch(
-        `${server}/_matrix/client/v3/rooms/${roomIdEncoded}/send/m.room.message/${txnId}?access_token=${accessToken}`,
+        `${server}/_matrix/client/v3/rooms/${roomIdEncoded}/send/m.room.message/${encodeURIComponent(txnId)}`,
         {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`,
+          },
           body: JSON.stringify({
             msgtype: 'm.text',
-            body: inputMsg.trim(),
+            body: msgText,
           }),
         }
       );
 
       if (res.ok) {
         const data = await res.json();
-        // Optimistically add the message
         setMessages(prev => [
           ...prev,
           {
             eventId: data.event_id || txnId,
             sender: userId,
-            body: inputMsg.trim(),
+            body: msgText,
             timestamp: Date.now(),
             type: 'text',
           },
         ]);
         setInputMsg('');
+      } else {
+        const errData = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+        console.error('Send failed:', res.status, errData);
+        setSendError(errData.error || `Error ${res.status}`);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Send error:', err);
+      setSendError(err.message || 'Network error');
     } finally {
       setSending(false);
     }
@@ -494,12 +518,15 @@ export default function MatrixChat({ roomAlias, labels, isRTL }: MatrixChatProps
 
       {/* Input area */}
       <div className="border-t border-green-500/20 bg-green-950/10 px-4 py-3 flex-shrink-0">
+        {sendError && (
+          <div className="text-red-400 text-xs mb-2 px-1">{sendError}</div>
+        )}
         {loggedIn ? (
           <form onSubmit={handleSend} className={`flex gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <input
               type="text"
               value={inputMsg}
-              onChange={e => setInputMsg(e.target.value)}
+              onChange={e => { setInputMsg(e.target.value); setSendError(''); }}
               placeholder={labels.sendPlaceholder}
               className="flex-1 px-3 py-2 bg-black border border-green-500/30 rounded-lg text-green-300 text-sm placeholder:text-green-300/30 focus:outline-none focus:border-green-500/60"
               disabled={sending}
