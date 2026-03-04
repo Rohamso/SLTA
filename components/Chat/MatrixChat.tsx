@@ -178,11 +178,14 @@ export default function MatrixChat({ roomId, roomDisplayName, labels, isRTL }: M
     async function poll() {
       try {
         const since = sinceTokenRef.current;
+        const server = homeserverUrlRef.current;
         const url = since
-          ? `${MATRIX_HOMESERVER}/_matrix/client/v3/sync?since=${since}&timeout=10000&access_token=${accessToken}`
-          : `${MATRIX_HOMESERVER}/_matrix/client/v3/sync?timeout=0&access_token=${accessToken}`;
+          ? `${server}/_matrix/client/v3/sync?since=${since}&timeout=10000&filter={"room":{"rooms":["${roomId}"],"timeline":{"limit":50}}}`
+          : `${server}/_matrix/client/v3/sync?timeout=0&filter={"room":{"rooms":["${roomId}"],"timeline":{"limit":50}}}`;
 
-        const res = await fetch(url);
+        const res = await fetch(url, {
+          headers: { 'Authorization': `Bearer ${accessToken}` },
+        });
         if (!res.ok || cancelled) return;
         const data = await res.json();
 
@@ -259,7 +262,7 @@ export default function MatrixChat({ roomId, roomDisplayName, labels, isRTL }: M
 
       // Join the room by ID
       const roomIdEncoded = encodeURIComponent(roomId);
-      await fetch(`${server}/_matrix/client/v3/join/${roomIdEncoded}`, {
+      const joinRes = await fetch(`${server}/_matrix/client/v3/join/${roomIdEncoded}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -267,6 +270,11 @@ export default function MatrixChat({ roomId, roomDisplayName, labels, isRTL }: M
         },
         body: JSON.stringify({}),
       });
+
+      if (!joinRes.ok) {
+        const joinErr = await joinRes.json().catch(() => ({ error: 'Join failed' }));
+        throw new Error(joinErr.error || 'Could not join room');
+      }
 
       setLoggedIn(true);
       setShowLogin(false);
@@ -307,17 +315,7 @@ export default function MatrixChat({ roomId, roomDisplayName, labels, isRTL }: M
       );
 
       if (res.ok) {
-        const data = await res.json();
-        setMessages(prev => [
-          ...prev,
-          {
-            eventId: data.event_id || txnId,
-            sender: userId,
-            body: msgText,
-            timestamp: Date.now(),
-            type: 'text',
-          },
-        ]);
+        // Don't optimistically add — let sync polling confirm delivery
         setInputMsg('');
       } else {
         const errData = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
