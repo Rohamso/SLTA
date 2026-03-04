@@ -218,7 +218,12 @@
     "step2Desc": "Once logged in, you'll automatically be in the LSTA community room. Say hello!",
     "step3Title": "Start Chatting",
     "step3Desc": "Discuss projects, share ideas, and collaborate securely with fellow members.",
-    "directAccess": "Having trouble with the embed? Open the chat directly:",
-    "openElement": "Open in Element"
+    "openElement": "Open Chat in Element",
+    "altTitle": "Ways to Connect",
+    "webApp": "Element Web",
+    "webAppDesc": "Open the chat room directly in your browser via app.element.io.",
+    "matrixClient": "Any Matrix App",
+    "matrixClientDesc": "Use any Matrix-compatible app (Element, FluffyChat, Nheko, etc.) to join.",
+    "roomAddress": "Room address — use this in any Matrix client:"
   }
 }
