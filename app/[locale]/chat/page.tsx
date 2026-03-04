@@ -63,7 +63,8 @@ export default function ChatPage() {
       {/* Embedded Chat */}
       <section className="mb-6 relative">
         <MatrixChat
-          roomAlias="#lsta-community:matrix.org"
+          roomId="!ZwrpzQRLHNULWPPomM:matrix.org"
+          roomDisplayName="General"
           labels={chatLabels}
           isRTL={isRTL}
         />

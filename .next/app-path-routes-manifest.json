@@ -2,12 +2,12 @@
   "/_not-found/page": "/_not-found",
   "/api/members/route": "/api/members",
   "/page": "/",
-  "/[locale]/trust/page": "/[locale]/trust",
-  "/[locale]/membership/page": "/[locale]/membership",
-  "/[locale]/chat/page": "/[locale]/chat",
-  "/[locale]/security/page": "/[locale]/security",
-  "/[locale]/page": "/[locale]",
   "/[locale]/privacy/page": "/[locale]/privacy",
-  "/[locale]/terms/page": "/[locale]/terms",
-  "/[locale]/members/page": "/[locale]/members"
+  "/[locale]/page": "/[locale]",
+  "/[locale]/security/page": "/[locale]/security",
+  "/[locale]/trust/page": "/[locale]/trust",
+  "/[locale]/members/page": "/[locale]/members",
+  "/[locale]/chat/page": "/[locale]/chat",
+  "/[locale]/membership/page": "/[locale]/membership",
+  "/[locale]/terms/page": "/[locale]/terms"
 }

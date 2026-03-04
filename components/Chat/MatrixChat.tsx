@@ -12,7 +12,8 @@ interface MatrixMessage {
 }
 
 interface MatrixChatProps {
-  roomAlias: string;
+  roomId: string;
+  roomDisplayName?: string;
   labels: {
     login: string;
     loginTitle: string;
@@ -81,7 +82,7 @@ function getSenderColor(userId: string): string {
   return colors[Math.abs(hash) % colors.length];
 }
 
-export default function MatrixChat({ roomAlias, labels, isRTL }: MatrixChatProps) {
+export default function MatrixChat({ roomId, roomDisplayName, labels, isRTL }: MatrixChatProps) {
   const [messages, setMessages] = useState<MatrixMessage[]>([]);
   const [status, setStatus] = useState<'connecting' | 'connected' | 'error'>('connecting');
   const [inputMsg, setInputMsg] = useState('');
@@ -97,7 +98,6 @@ export default function MatrixChat({ roomAlias, labels, isRTL }: MatrixChatProps
   const [loginError, setLoginError] = useState('');
   const [accessToken, setAccessToken] = useState('');
   const [userId, setUserId] = useState('');
-  const [resolvedRoomId, setResolvedRoomId] = useState('');
   const [sendError, setSendError] = useState('');
   const homeserverUrlRef = useRef('https://matrix.org');
 
@@ -114,23 +114,12 @@ export default function MatrixChat({ roomAlias, labels, isRTL }: MatrixChatProps
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
-  // Resolve room alias to room ID and fetch initial messages (guest access)
+  // Fetch initial messages (guest access)
   useEffect(() => {
     let cancelled = false;
 
     async function init() {
       try {
-        // Resolve alias
-        const aliasEncoded = encodeURIComponent(roomAlias);
-        const resolveRes = await fetch(
-          `${MATRIX_HOMESERVER}/_matrix/client/v3/directory/room/${aliasEncoded}`
-        );
-        if (!resolveRes.ok) throw new Error('Could not resolve room');
-        const resolveData = await resolveRes.json();
-        const roomId = resolveData.room_id;
-        if (cancelled) return;
-        setResolvedRoomId(roomId);
-
         // Register guest
         const guestRes = await fetch(
           `${MATRIX_HOMESERVER}/_matrix/client/v3/register?kind=guest`,
@@ -147,7 +136,7 @@ export default function MatrixChat({ roomAlias, labels, isRTL }: MatrixChatProps
           token = guestData.access_token;
         }
 
-        // Try to peek at room messages using guest token or public API
+        // Try to peek at room messages
         const roomIdEncoded = encodeURIComponent(roomId);
         const messagesUrl = token
           ? `${MATRIX_HOMESERVER}/_matrix/client/v3/rooms/${roomIdEncoded}/messages?dir=b&limit=50&access_token=${token}`
@@ -156,7 +145,6 @@ export default function MatrixChat({ roomAlias, labels, isRTL }: MatrixChatProps
         const msgRes = await fetch(messagesUrl);
 
         if (!msgRes.ok) {
-          // If can't peek, try events endpoint for public rooms
           if (cancelled) return;
           setStatus('connected');
           setMessages([]);
@@ -179,11 +167,11 @@ export default function MatrixChat({ roomAlias, labels, isRTL }: MatrixChatProps
 
     init();
     return () => { cancelled = true; };
-  }, [roomAlias]);
+  }, [roomId]);
 
   // Poll for new messages when logged in
   useEffect(() => {
-    if (!loggedIn || !accessToken || !resolvedRoomId) return;
+    if (!loggedIn || !accessToken || !roomId) return;
 
     let cancelled = false;
 
@@ -200,7 +188,7 @@ export default function MatrixChat({ roomAlias, labels, isRTL }: MatrixChatProps
 
         sinceTokenRef.current = data.next_batch || '';
 
-        const roomData = data.rooms?.join?.[resolvedRoomId];
+        const roomData = data.rooms?.join?.[roomId];
         if (roomData?.timeline?.events) {
           const newMsgs = parseTimelineEvents(roomData.timeline.events);
           if (newMsgs.length > 0) {
@@ -225,7 +213,7 @@ export default function MatrixChat({ roomAlias, labels, isRTL }: MatrixChatProps
       cancelled = true;
       if (pollRef.current) clearTimeout(pollRef.current);
     };
-  }, [loggedIn, accessToken, resolvedRoomId]);
+  }, [loggedIn, accessToken, roomId]);
 
   function parseTimelineEvents(events: any[]): MatrixMessage[] {
     return events
@@ -269,26 +257,16 @@ export default function MatrixChat({ roomAlias, labels, isRTL }: MatrixChatProps
       setUserId(loginData.user_id);
       homeserverUrlRef.current = server;
 
-      // Join the room (try both alias and room ID)
-      try {
-        // First try joining by alias
-        const aliasEncoded = encodeURIComponent(roomAlias);
-        await fetch(`${server}/_matrix/client/v3/join/${aliasEncoded}?access_token=${loginData.access_token}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({}),
-        });
-      } catch {
-        // Fallback: join by room ID
-        if (resolvedRoomId) {
-          const roomIdEncoded = encodeURIComponent(resolvedRoomId);
-          await fetch(`${server}/_matrix/client/v3/join/${roomIdEncoded}?access_token=${loginData.access_token}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({}),
-          });
-        }
-      }
+      // Join the room by ID
+      const roomIdEncoded = encodeURIComponent(roomId);
+      await fetch(`${server}/_matrix/client/v3/join/${roomIdEncoded}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${loginData.access_token}`,
+        },
+        body: JSON.stringify({}),
+      });
 
       setLoggedIn(true);
       setShowLogin(false);
@@ -302,7 +280,7 @@ export default function MatrixChat({ roomAlias, labels, isRTL }: MatrixChatProps
 
   async function handleSend(e: React.FormEvent) {
     e.preventDefault();
-    if (!inputMsg.trim() || !loggedIn || !accessToken || !resolvedRoomId) return;
+    if (!inputMsg.trim() || !loggedIn || !accessToken || !roomId) return;
 
     setSending(true);
     setSendError('');
@@ -310,7 +288,7 @@ export default function MatrixChat({ roomAlias, labels, isRTL }: MatrixChatProps
 
     try {
       const server = homeserverUrlRef.current;
-      const roomIdEncoded = encodeURIComponent(resolvedRoomId);
+      const roomIdEncoded = encodeURIComponent(roomId);
       const txnId = `m${Date.now()}.${Math.random().toString(36).slice(2, 8)}`;
 
       const res = await fetch(
@@ -384,7 +362,7 @@ export default function MatrixChat({ roomAlias, labels, isRTL }: MatrixChatProps
           <span className="text-green-300/70 text-xs">
             {status === 'connecting' ? labels.connecting : status === 'connected' ? labels.connected : labels.error}
           </span>
-          <span className="text-green-500/40 text-xs ml-2 font-mono">{roomAlias}</span>
+          <span className="text-green-500/40 text-xs ml-2 font-mono">{roomDisplayName || roomId}</span>
         </div>
         <div className="flex items-center gap-2">
           {loggedIn ? (
