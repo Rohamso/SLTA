@@ -55,6 +55,9 @@ export function Header() {
             <Link href={`/${locale}/trust`} className="text-green-300/80 hover:text-green-400 transition font-medium text-sm">
               {t('nav.trust')}
             </Link>
+            <Link href={`/${locale}/chat`} className="text-green-300/80 hover:text-green-400 transition font-medium text-sm">
+              {t('nav.chat')}
+            </Link>
           </nav>
 
           {/* Right side: Language Toggle + Hamburger */}
@@ -103,6 +106,13 @@ export function Header() {
             className="block px-4 py-3 text-green-300/80 hover:text-green-400 hover:bg-green-900/30 rounded-lg transition font-medium text-sm"
           >
             {t('nav.trust')}
+          </Link>
+          <Link
+            href={`/${locale}/chat`}
+            onClick={closeMenu}
+            className="block px-4 py-3 text-green-300/80 hover:text-green-400 hover:bg-green-900/30 rounded-lg transition font-medium text-sm"
+          >
+            {t('nav.chat')}
           </Link>
         </nav>
       </div>

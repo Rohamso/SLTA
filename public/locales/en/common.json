@@ -3,6 +3,7 @@
     "home": "Home",
     "membership": "Membership",
     "trust": "Trust Center",
+    "chat": "Community Chat",
     "about": "About Us"
   },
   "footer": {
@@ -204,5 +205,20 @@
     "incidentContact": "Report a security concern: security@lionandsuntech.org (PGP encrypted email supported)",
     "disclosureTitle": "Responsible Disclosure",
     "disclosureContent": "We welcome security researchers who discover vulnerabilities in our systems. Please report them responsibly to security@lionandsuntech.org. We commit to acknowledging reports within 48 hours, providing updates on remediation, and crediting researchers (with their consent). We will never pursue legal action against good-faith security researchers."
+  },
+  "chat": {
+    "title": "Community Chat",
+    "subtitle": "Connect with LSTA members in real-time through our secure Matrix-powered chat room.",
+    "encrypted": "End-to-End Encrypted",
+    "encryptedDesc": "This chat is powered by Matrix, a decentralized, open-source protocol. Your messages are encrypted and no central authority controls the network.",
+    "helpTitle": "How to Join",
+    "step1Title": "Create an Account",
+    "step1Desc": "Sign up for a free Matrix account directly in the chat window above or at app.element.io.",
+    "step2Title": "Join the Room",
+    "step2Desc": "Once logged in, you'll automatically be in the LSTA community room. Say hello!",
+    "step3Title": "Start Chatting",
+    "step3Desc": "Discuss projects, share ideas, and collaborate securely with fellow members.",
+    "directAccess": "Having trouble with the embed? Open the chat directly:",
+    "openElement": "Open in Element"
   }
 }
