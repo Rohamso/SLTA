@@ -8,8 +8,8 @@ export default function ChatPage() {
   const locale = useLocale();
   const isRTL = locale === 'fa';
 
-  const elementUrl = 'https://app.element.io/#/room/#lsta_org:matrix.org';
-  const matrixToUrl = 'https://matrix.to/#/#lsta_org:matrix.org';
+  const elementUrl = 'https://app.element.io/#/room/#lsta-community:matrix.org';
+  const matrixToUrl = 'https://matrix.to/#/#lsta-community:matrix.org';
 
   const chatLabels = {
     login: t('chat.login'),
@@ -63,7 +63,7 @@ export default function ChatPage() {
       {/* Embedded Chat */}
       <section className="mb-6 relative">
         <MatrixChat
-          roomAlias="#lsta_org:matrix.org"
+          roomAlias="#lsta-community:matrix.org"
           labels={chatLabels}
           isRTL={isRTL}
         />
@@ -128,7 +128,7 @@ export default function ChatPage() {
         <div className="mt-6 text-center">
           <p className="text-green-300/50 text-xs mb-1">{t('chat.roomAddress')}</p>
           <code className="inline-block px-3 py-1.5 bg-green-950/50 border border-green-500/20 rounded-lg text-green-400 font-mono text-sm select-all">
-            #lsta_org:matrix.org
+            #lsta-community:matrix.org
           </code>
         </div>
       </section>
