@@ -61,10 +61,10 @@ export function Header() {
           </nav>
 
           {/* Right side: Language Toggle + Hamburger */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <button
               onClick={toggleLanguage}
-              className="px-4 py-2 rounded-lg bg-green-900/50 hover:bg-green-900 transition font-semibold text-sm text-green-400 border border-green-500/30"
+              className="px-3 sm:px-4 py-2 rounded-lg bg-green-900/50 hover:bg-green-900 transition font-semibold text-sm text-green-400 border border-green-500/30"
             >
               {locale === 'en' ? 'فارسی' : 'English'}
             </button>
@@ -72,50 +72,53 @@ export function Header() {
             {/* Hamburger Button (mobile/tablet) */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="lg:hidden flex flex-col justify-center items-center w-10 h-10 rounded-lg border border-green-500/30 bg-green-900/50 hover:bg-green-900 transition"
+              className="lg:hidden flex flex-col justify-center items-center w-11 h-11 rounded-lg border-2 border-green-500/50 bg-green-900/60 hover:bg-green-800 active:bg-green-700 transition-colors"
               aria-label="Toggle menu"
+              type="button"
             >
-              <span className={`block w-5 h-0.5 bg-green-400 transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-[3px]' : ''}`} />
-              <span className={`block w-5 h-0.5 bg-green-400 my-[3px] transition-all duration-300 ${menuOpen ? 'opacity-0' : ''}`} />
-              <span className={`block w-5 h-0.5 bg-green-400 transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-[3px]' : ''}`} />
+              <span className={`block w-6 h-[3px] rounded-full bg-green-400 transition-all duration-300 origin-center ${menuOpen ? 'rotate-45 translate-y-[7px]' : ''}`} />
+              <span className={`block w-6 h-[3px] rounded-full bg-green-400 my-[4px] transition-all duration-300 ${menuOpen ? 'opacity-0 scale-0' : ''}`} />
+              <span className={`block w-6 h-[3px] rounded-full bg-green-400 transition-all duration-300 origin-center ${menuOpen ? '-rotate-45 -translate-y-[7px]' : ''}`} />
             </button>
           </div>
         </div>
       </div>
 
       {/* Mobile Menu */}
-      <div className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${menuOpen ? 'max-h-60 border-t border-green-500/30' : 'max-h-0'}`}>
-        <nav className={`flex flex-col px-4 py-4 gap-1 bg-black ${isRTL ? 'text-right' : ''}`}>
-          <Link
-            href={`/${locale}`}
-            onClick={closeMenu}
-            className="block px-4 py-3 text-green-300/80 hover:text-green-400 hover:bg-green-900/30 rounded-lg transition font-medium text-sm"
-          >
-            {t('nav.home')}
-          </Link>
-          <Link
-            href={`/${locale}/membership`}
-            onClick={closeMenu}
-            className="block px-4 py-3 text-green-300/80 hover:text-green-400 hover:bg-green-900/30 rounded-lg transition font-medium text-sm"
-          >
-            {t('nav.membership')}
-          </Link>
-          <Link
-            href={`/${locale}/trust`}
-            onClick={closeMenu}
-            className="block px-4 py-3 text-green-300/80 hover:text-green-400 hover:bg-green-900/30 rounded-lg transition font-medium text-sm"
-          >
-            {t('nav.trust')}
-          </Link>
-          <Link
-            href={`/${locale}/chat`}
-            onClick={closeMenu}
-            className="block px-4 py-3 text-green-300/80 hover:text-green-400 hover:bg-green-900/30 rounded-lg transition font-medium text-sm"
-          >
-            {t('nav.chat')}
-          </Link>
-        </nav>
-      </div>
+      {menuOpen && (
+        <div className="lg:hidden border-t border-green-500/30 bg-black/95 backdrop-blur-sm">
+          <nav className={`flex flex-col px-4 py-4 gap-1 ${isRTL ? 'text-right' : ''}`}>
+            <Link
+              href={`/${locale}`}
+              onClick={closeMenu}
+              className="block px-4 py-3 text-green-300/80 hover:text-green-400 hover:bg-green-900/30 rounded-lg transition font-medium text-sm"
+            >
+              {t('nav.home')}
+            </Link>
+            <Link
+              href={`/${locale}/membership`}
+              onClick={closeMenu}
+              className="block px-4 py-3 text-green-300/80 hover:text-green-400 hover:bg-green-900/30 rounded-lg transition font-medium text-sm"
+            >
+              {t('nav.membership')}
+            </Link>
+            <Link
+              href={`/${locale}/trust`}
+              onClick={closeMenu}
+              className="block px-4 py-3 text-green-300/80 hover:text-green-400 hover:bg-green-900/30 rounded-lg transition font-medium text-sm"
+            >
+              {t('nav.trust')}
+            </Link>
+            <Link
+              href={`/${locale}/chat`}
+              onClick={closeMenu}
+              className="block px-4 py-3 text-green-300/80 hover:text-green-400 hover:bg-green-900/30 rounded-lg transition font-medium text-sm"
+            >
+              {t('nav.chat')}
+            </Link>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
