@@ -58,6 +58,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href={`/${locale}/services`} className="text-green-300/70 hover:text-green-400 text-sm transition">
+                  {t('nav.services')}
+                </Link>
+              </li>
+              <li>
                 <a href="#" className="text-green-300/70 hover:text-green-400 text-sm transition">
                   {t('nav.about')}
                 </a>

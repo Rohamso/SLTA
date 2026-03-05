@@ -4,6 +4,7 @@
     "membership": "Membership",
     "trust": "Trust Center",
     "chat": "Community Chat",
+    "services": "Services",
     "about": "About Us"
   },
   "footer": {
@@ -240,5 +241,31 @@
     "openElement": "Open in Element",
     "matrixClient": "Open in any Matrix app",
     "roomAddress": "Room address:"
+  },
+  "services": {
+    "title": "Community Services",
+    "subtitle": "Free professional services to support our community members worldwide.",
+    "resumeTitle": "Free Resume Review",
+    "resumeDesc": "Looking for a job abroad? We offer free, professional resume reviews to help Iranian tech professionals land opportunities across the globe. Our team of experienced reviewers will provide actionable feedback to strengthen your application.",
+    "resumeHow": "How It Works",
+    "resumeStep1": "Upload your resume (PDF, DOC, or DOCX, max 5MB)",
+    "resumeStep2": "Tell us which country you're applying to",
+    "resumeStep3": "We'll review and send feedback within 10 business days",
+    "formTitle": "Submit Your Resume",
+    "fullName": "Full Name",
+    "email": "Email Address",
+    "country": "Target Country",
+    "countryPlaceholder": "e.g. Germany, Canada, USA...",
+    "resume": "Upload Resume",
+    "resumeHint": "PDF, DOC, or DOCX — max 5MB",
+    "submit": "Submit for Review",
+    "submitting": "Submitting...",
+    "successTitle": "Thank You!",
+    "successMsg": "Your resume has been submitted. We'll review it and send you feedback within 10 business days.",
+    "submitAnother": "Submit Another Resume",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "fileTooLarge": "File is too large. Maximum size is 5MB.",
+    "invalidFileType": "Invalid file type. Please upload a PDF, DOC, or DOCX file.",
+    "disclaimer": "Your data is handled securely and only used for the purpose of reviewing your resume. We do not share your information with third parties."
   }
 }
