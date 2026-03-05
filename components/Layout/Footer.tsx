@@ -99,6 +99,9 @@ export function Footer() {
             <ul className="space-y-3 text-sm text-green-200/70">
               <li>
                 <span className="font-semibold block text-green-300">Email</span>
+                <li>
+                  <Link href={`/${locale}/team`} className="text-green-300/70 hover:text-green-400 text-sm transition">Team</Link>
+                </li>
                 <span>contact@lionandsuntech.org</span>
               </li>
               <li>
