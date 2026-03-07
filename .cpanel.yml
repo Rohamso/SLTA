@@ -3,5 +3,6 @@ deployment:
   tasks:
     - export DEPLOYPATH=/home/lioniars/app_root
     - /bin/cp -R $DEPLOYPATH/.next $DEPLOYPATH/.next.bak 2>/dev/null || true
-    - cd $DEPLOYPATH && source /home/lioniars/nodevenv/app_root/20/bin/activate && npm install --production
+    - cd $DEPLOYPATH && source /home/lioniars/nodevenv/app_root/20/bin/activate && npm install
+    - cd $DEPLOYPATH && source /home/lioniars/nodevenv/app_root/20/bin/activate && npm run build
     - touch $DEPLOYPATH/tmp/restart.txt 2>/dev/null || mkdir -p $DEPLOYPATH/tmp && touch $DEPLOYPATH/tmp/restart.txt
