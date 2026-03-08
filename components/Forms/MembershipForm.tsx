@@ -3,7 +3,30 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 
-export function MembershipForm() {
+interface MemberCounts {
+  publicAdvocate: number;
+  discreteContributor: number;
+  confidentialMember: number;
+}
+
+interface MembershipFormProps {
+  onSubmitted?: (counts: MemberCounts) => void;
+}
+
+function isMemberCounts(value: unknown): value is MemberCounts {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+
+  const candidate = value as Partial<MemberCounts>;
+  return (
+    typeof candidate.publicAdvocate === 'number' &&
+    typeof candidate.discreteContributor === 'number' &&
+    typeof candidate.confidentialMember === 'number'
+  );
+}
+
+export function MembershipForm({ onSubmitted }: MembershipFormProps) {
   const t = useTranslations();
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -41,6 +64,9 @@ export function MembershipForm() {
       
       console.log('Membership application submitted:', data);
       setSubmitted(true);
+      if (isMemberCounts(data?.counts)) {
+        onSubmitted?.(data.counts);
+      }
     } catch (error) {
       console.error('Submission error:', error);
       alert(`Failed to submit: ${error instanceof Error ? error.message : String(error)}`);

@@ -86,6 +86,9 @@
   "membership": {
     "title": "Join Our Community",
     "subtitle": "Complete the membership application",
+    "countsTitle": "Current Member Distribution",
+    "countsSubtitle": "Only aggregate totals by security level are shown.",
+    "countsLoading": "Loading member totals...",
     "formTitle": "Membership Application",
     "fullName": "Full Name",
     "email": "Email Address",
