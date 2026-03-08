@@ -9,7 +9,7 @@ const teamMembers = [
     image: '/images/team/roham.jpg', // Placeholder, update with real image if available
   },
   {
-    name: 'Aria Ardalan',
+    name: 'Dr. Aria Ardalan',
     title: 'Founding Member',
     email: 'aria@lionandsuntech.org',
     linkedin: 'https://www.linkedin.com/in/aria-ardalan-002121a1/',
