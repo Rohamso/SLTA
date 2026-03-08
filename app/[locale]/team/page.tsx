@@ -3,14 +3,14 @@ import Image from 'next/image';
 const teamMembers = [
   {
     name: 'Roham Soleimani',
-    title: 'Co-Founder',
+    title: 'Founding Member',
     email: 'roham@lionandsuntech.org',
     linkedin: 'https://www.linkedin.com/in/roham-soleimani/',
     image: '/images/team/roham.jpg', // Placeholder, update with real image if available
   },
   {
     name: 'Aria Ardalan',
-    title: 'Co-Founder',
+    title: 'Founding Member',
     email: 'aria@lionandsuntech.org',
     linkedin: 'https://www.linkedin.com/in/aria-ardalan-002121a1/',
     image: '/images/team/aria.jpg', // Placeholder, update with real image if available
