@@ -9,8 +9,9 @@ export interface MemberCounts {
   confidentialMember: number;
 }
 
-const DATA_DIRECTORY = path.join(process.cwd(), 'data');
-const DATA_FILE = path.join(DATA_DIRECTORY, 'member-counts.json');
+const COUNTS_FILE_NAME = 'member-counts.json';
+const DEFAULT_DATA_DIRECTORY = path.join(process.cwd(), 'data');
+const TMP_DATA_DIRECTORY = path.join('/tmp', 'slta-data');
 
 const DEFAULT_COUNTS: MemberCounts = {
   publicAdvocate: 5,
@@ -19,6 +20,8 @@ const DEFAULT_COUNTS: MemberCounts = {
 };
 
 let updateQueue: Promise<void> = Promise.resolve();
+let volatileCounts: MemberCounts = { ...DEFAULT_COUNTS };
+let preferredDataFile: string | null = null;
 
 function asNonNegativeNumber(value: unknown, fallback: number): number {
   return typeof value === 'number' && Number.isFinite(value) && value >= 0 ? Math.floor(value) : fallback;
@@ -32,6 +35,27 @@ function normalizeCounts(input: Partial<MemberCounts> | null | undefined): Membe
   };
 }
 
+function candidateDataFiles(): string[] {
+  const configuredDir = process.env.MEMBER_COUNTS_DIR?.trim();
+  const directories = [
+    configuredDir || null,
+    DEFAULT_DATA_DIRECTORY,
+    TMP_DATA_DIRECTORY,
+  ].filter((item): item is string => Boolean(item));
+
+  const files = directories.map((directory) => path.join(directory, COUNTS_FILE_NAME));
+  return Array.from(new Set(files));
+}
+
+function writeCandidates(): string[] {
+  if (!preferredDataFile) {
+    return candidateDataFiles();
+  }
+
+  const files = candidateDataFiles();
+  return [preferredDataFile, ...files.filter((file) => file !== preferredDataFile)];
+}
+
 export function normalizeSecurityLevel(value: string): SecurityLevel | null {
   if (value === 'publicAdvocate' || value === 'discreteContributor' || value === 'confidentialMember') {
     return value;
@@ -40,40 +64,70 @@ export function normalizeSecurityLevel(value: string): SecurityLevel | null {
 }
 
 async function readCountsFromDisk(): Promise<MemberCounts> {
-  try {
-    const raw = await fs.readFile(DATA_FILE, 'utf8');
-    const parsed = JSON.parse(raw) as Partial<MemberCounts>;
-    return normalizeCounts(parsed);
-  } catch (error) {
-    const code = (error as NodeJS.ErrnoException).code;
-    if (code !== 'ENOENT') {
-      console.error('Failed to read member counts file, using defaults:', error);
+  for (const file of candidateDataFiles()) {
+    try {
+      const raw = await fs.readFile(file, 'utf8');
+      const parsed = JSON.parse(raw) as Partial<MemberCounts>;
+      const counts = normalizeCounts(parsed);
+      volatileCounts = counts;
+      preferredDataFile = file;
+      return counts;
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code;
+      if (code !== 'ENOENT') {
+        console.error(`Failed to read member counts from ${file}:`, error);
+      }
     }
-    return { ...DEFAULT_COUNTS };
   }
+
+  return { ...volatileCounts };
 }
 
 async function writeCountsToDisk(counts: MemberCounts): Promise<void> {
-  await fs.mkdir(DATA_DIRECTORY, { recursive: true });
-  await fs.writeFile(DATA_FILE, JSON.stringify(counts, null, 2), 'utf8');
+  const payload = JSON.stringify(counts, null, 2);
+  let lastError: unknown = null;
+
+  for (const file of writeCandidates()) {
+    try {
+      await fs.mkdir(path.dirname(file), { recursive: true });
+      await fs.writeFile(file, payload, 'utf8');
+      preferredDataFile = file;
+      return;
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  throw lastError;
 }
 
 export async function getMemberCounts(): Promise<MemberCounts> {
   const counts = await readCountsFromDisk();
+  volatileCounts = counts;
   try {
     await writeCountsToDisk(counts);
   } catch (error) {
-    console.error('Failed to persist member counts defaults:', error);
+    console.error('Failed to persist member counts, using in-memory fallback:', error);
   }
   return counts;
 }
 
 export async function incrementMemberCount(level: SecurityLevel): Promise<MemberCounts> {
-  const operation = async (): Promise<MemberCounts> => {
+  const operation = async () => {
     const counts = await readCountsFromDisk();
-    counts[level] += 1;
-    await writeCountsToDisk(counts);
-    return counts;
+    const updatedCounts: MemberCounts = {
+      ...counts,
+      [level]: counts[level] + 1,
+    };
+    volatileCounts = updatedCounts;
+
+    try {
+      await writeCountsToDisk(updatedCounts);
+    } catch (error) {
+      console.error('Failed to persist incremented member counts, using in-memory fallback:', error);
+    }
+
+    return updatedCounts;
   };
 
   const run = updateQueue.then(operation, operation);
