@@ -22,7 +22,7 @@ export function Footer() {
                 {t('footer.noLogs')}
               </p>
               <p className="text-green-200/70 text-sm leading-relaxed">
-                Your identity is protected at every level. We do not collect, store, or process identifying information beyond what is absolutely necessary, and all data is encrypted at rest using industry-leading protocols.
+                {t('footer.noLogsExtended')}
               </p>
             </div>
           </div>
@@ -68,6 +68,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href={`/${locale}/dashboard`} className="text-green-300/70 hover:text-green-400 text-sm transition">
+                  {t('nav.dashboard')}
+                </Link>
+              </li>
+              <li>
                 <a href="#" className="text-green-300/70 hover:text-green-400 text-sm transition">
                   {t('nav.about')}
                 </a>
@@ -81,19 +86,19 @@ export function Footer() {
             <ul className="space-y-2">
               <li className="text-green-200/70 text-sm flex items-center gap-2">
                 <span className="text-green-500">✓</span>
-                <span>{t('footer.noLogs')}</span>
+                <span>{t('footer.securityNoIdentifyingLogs')}</span>
               </li>
               <li className="text-green-200/70 text-sm flex items-center gap-2">
                 <span className="text-green-500">✓</span>
-                <span>End-to-End Encryption</span>
+                <span>{t('footer.securityAggregateImpressions')}</span>
               </li>
               <li className="text-green-200/70 text-sm flex items-center gap-2">
                 <span className="text-green-500">✓</span>
-                <span>Independent Audits</span>
+                <span>{t('footer.securityEncryption')}</span>
               </li>
               <li className="text-green-200/70 text-sm flex items-center gap-2">
                 <span className="text-green-500">✓</span>
-                <span>Zero-Knowledge</span>
+                <span>{t('footer.securityIndependentAudits')}</span>
               </li>
             </ul>
           </div>
@@ -126,9 +131,9 @@ export function Footer() {
               <p>&copy; {currentYear} Lion & Sun Tech Association. {t('footer.copyright')}</p>
             </div>
             <div className="flex gap-6 text-sm">
-              <Link href={`/${locale}/privacy`} className="text-green-300/70 hover:text-green-400 transition">Privacy Policy</Link>
-              <Link href={`/${locale}/terms`} className="text-green-300/70 hover:text-green-400 transition">Terms of Service</Link>
-              <Link href={`/${locale}/security`} className="text-green-300/70 hover:text-green-400 transition">Security Report</Link>
+              <Link href={`/${locale}/privacy`} className="text-green-300/70 hover:text-green-400 transition">{t('footer.privacyPolicy')}</Link>
+              <Link href={`/${locale}/terms`} className="text-green-300/70 hover:text-green-400 transition">{t('footer.termsOfService')}</Link>
+              <Link href={`/${locale}/security`} className="text-green-300/70 hover:text-green-400 transition">{t('footer.securityReport')}</Link>
             </div>
           </div>
         </div>

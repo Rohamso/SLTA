@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { NextIntlClientProvider } from 'next-intl';
 import { Header } from '@/components/Layout/Header';
 import { Footer } from '@/components/Layout/Footer';
+import { ImpressionTracker } from '@/components/Analytics/ImpressionTracker';
 
 // Skip static generation due to dynamic client components and i18n
 export const revalidate = 0;
@@ -53,6 +54,7 @@ export default async function LocaleLayout({ children, params }: Props) {
     <html lang={locale} dir={locale === 'fa' ? 'rtl' : 'ltr'} suppressHydrationWarning>
       <body>
         <NextIntlClientProvider messages={messages} locale={locale}>
+          <ImpressionTracker />
           <div className="flex flex-col min-h-screen">
             <Header />
             <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12">

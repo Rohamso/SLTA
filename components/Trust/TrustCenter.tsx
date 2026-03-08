@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslations, useLocale } from 'next-intl';
+import Link from 'next/link';
 
 export function TrustCenter() {
   const t = useTranslations();
@@ -28,6 +29,25 @@ export function TrustCenter() {
       titleKey: 'trust.jurisdiction',
       descKey: 'trust.jurisdictionDescription'
     }
+  ];
+
+  const transparencyItems = [
+    {
+      titleKey: 'trust.transparencyQuarterlyTitle',
+      descKey: 'trust.transparencyQuarterlyDesc',
+    },
+    {
+      titleKey: 'trust.transparencyRequestsTitle',
+      descKey: 'trust.transparencyRequestsDesc',
+    },
+    {
+      titleKey: 'trust.transparencyDataTitle',
+      descKey: 'trust.transparencyDataDesc',
+    },
+    {
+      titleKey: 'trust.transparencyAuditTitle',
+      descKey: 'trust.transparencyAuditDesc',
+    },
   ];
 
   return (
@@ -156,36 +176,25 @@ export function TrustCenter() {
 
       {/* Transparency Report Section */}
       <div className="bg-green-950 border border-green-500/30 rounded-lg p-8">
-        <h2 className="text-3xl font-bold mb-8 text-green-400">Transparency & Compliance</h2>
+        <h2 className="text-3xl font-bold mb-8 text-green-400">{t('trust.transparencyTitle')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="flex items-start gap-4">
-            <span className="text-green-500 text-2xl font-bold flex-shrink-0">✓</span>
-            <div>
-              <h3 className="font-bold text-green-300 mb-1">Quarterly Reports</h3>
-              <p className="text-green-200/70 text-sm">We maintain a public transparency report updated quarterly with detailed metrics.</p>
+          {transparencyItems.map((item) => (
+            <div key={item.titleKey} className="flex items-start gap-4">
+              <span className="text-green-500 text-2xl font-bold flex-shrink-0">✓</span>
+              <div>
+                <h3 className="font-bold text-green-300 mb-1">{t(item.titleKey)}</h3>
+                <p className="text-green-200/70 text-sm">{t(item.descKey)}</p>
+              </div>
             </div>
-          </div>
-          <div className="flex items-start gap-4">
-            <span className="text-green-500 text-2xl font-bold flex-shrink-0">✓</span>
-            <div>
-              <h3 className="font-bold text-green-300 mb-1">Government Requests</h3>
-              <p className="text-green-200/70 text-sm">All government data requests are logged and reported to members immediately.</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-4">
-            <span className="text-green-500 text-2xl font-bold flex-shrink-0">✓</span>
-            <div>
-              <h3 className="font-bold text-green-300 mb-1">Data Protection</h3>
-              <p className="text-green-200/70 text-sm">Member data is never sold, shared, or traded with third parties under any circumstances.</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-4">
-            <span className="text-green-500 text-2xl font-bold flex-shrink-0">✓</span>
-            <div>
-              <h3 className="font-bold text-green-300 mb-1">Independent Audits</h3>
-              <p className="text-green-200/70 text-sm">Third-party security audits conducted annually by leading cybersecurity firms.</p>
-            </div>
-          </div>
+          ))}
+        </div>
+        <div className="mt-8">
+          <Link
+            href={`/${locale}/dashboard`}
+            className="inline-flex items-center gap-2 px-5 py-3 bg-green-600 text-black font-bold rounded-lg hover:bg-green-500 transition"
+          >
+            {t('trust.impressionsDashboard')} →
+          </Link>
         </div>
       </div>
     </div>

@@ -2,3 +2,4 @@
 node_modules
 .next
 data/member-counts.json
+data/impressions.json

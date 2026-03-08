@@ -15,6 +15,7 @@ export default function PrivacyPolicyPage() {
     { title: t('privacy.section5Title'), content: t('privacy.section5Content') },
     { title: t('privacy.section6Title'), content: t('privacy.section6Content') },
     { title: t('privacy.section7Title'), content: t('privacy.section7Content') },
+    { title: t('privacy.section8Title'), content: t('privacy.section8Content') },
   ];
 
   return (
