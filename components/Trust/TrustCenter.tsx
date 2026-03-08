@@ -1,7 +1,6 @@
 'use client';
 
 import { useTranslations, useLocale } from 'next-intl';
-import Link from 'next/link';
 
 export function TrustCenter() {
   const t = useTranslations();
@@ -187,14 +186,6 @@ export function TrustCenter() {
               </div>
             </div>
           ))}
-        </div>
-        <div className="mt-8">
-          <Link
-            href={`/${locale}/dashboard`}
-            className="inline-flex items-center gap-2 px-5 py-3 bg-green-600 text-black font-bold rounded-lg hover:bg-green-500 transition"
-          >
-            {t('trust.impressionsDashboard')} →
-          </Link>
         </div>
       </div>
     </div>

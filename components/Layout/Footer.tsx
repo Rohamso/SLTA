@@ -68,11 +68,6 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}/dashboard`} className="text-green-300/70 hover:text-green-400 text-sm transition">
-                  {t('nav.dashboard')}
-                </Link>
-              </li>
-              <li>
                 <a href="#" className="text-green-300/70 hover:text-green-400 text-sm transition">
                   {t('nav.about')}
                 </a>
