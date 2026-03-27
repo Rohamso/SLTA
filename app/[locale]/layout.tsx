@@ -3,6 +3,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { Header } from '@/components/Layout/Header';
 import { Footer } from '@/components/Layout/Footer';
 import { ImpressionTracker } from '@/components/Analytics/ImpressionTracker';
+import { Analytics } from '@vercel/analytics/next';
 
 // Skip static generation due to dynamic client components and i18n
 export const revalidate = 0;
@@ -63,6 +64,7 @@ export default async function LocaleLayout({ children, params }: Props) {
             <Footer />
           </div>
         </NextIntlClientProvider>
+        <Analytics />
       </body>
     </html>
   );
