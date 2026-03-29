@@ -8,13 +8,6 @@ const teamMembers = [
     linkedin: 'https://www.linkedin.com/in/roham-soleimani/',
     image: '/images/team/roham.jpg', // Placeholder, update with real image if available
   },
-  {
-    name: 'Dr. Aria Ardalan',
-    title: 'Founding Member',
-    email: 'aria@lionandsuntech.org',
-    linkedin: 'https://www.linkedin.com/in/aria-ardalan-002121a1/',
-    image: '/images/team/aria.jpg', // Placeholder, update with real image if available
-  },
 ];
 
 export default function TeamPage() {
